@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ブレインロット 被害報告ID 注意リスト</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 30px;
+    }
+    h1 {
+      color: #facc15;
+    }
+    .notice {
+      background: #1f2933;
+      padding: 15px;
+      border-left: 5px solid #38bdf8;
+      margin-bottom: 25px;
+    }
+    .card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .id {
+      font-weight: bold;
+      color: #f87171;
+    }
+    .status {
+      color: #facc15;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚠ フォートナイトブレインロット　詐欺疑い　エピックID</h1>
+<div style="margin-bottom:20px;">
+  <input
+    type="text"
+    id="searchBox"
+    placeholder="Epic ID を検索"
+    style="width:100%; padding:10px; font-size:16px; margin-bottom:10px;"
+    onkeyup="filterIDs()"
+  >
+
+  <div style="margin-bottom:10px;">
+    <label>
+      <input type="radio" name="match" value="partial" checked onchange="filterIDs()">
+      部分一致
+    </label>
+   　
+    <label>
+      <input type="radio" name="match" value="exact" onchange="filterIDs()">
+      完全一致
+    </label>
+  </div>
+
+  <select id="riskFilter" onchange="filterIDs()" style="width:100%; padding:8px;">
+    <option value="">危険度：すべて</option>
+    <option value="★">★</option>
+    <option value="★★">★★</option>
+    <option value="★★★">★★★</option>
+  </select>
+</div>
+
+<p id="noResult" style="display:none; color:#f87171;">
+  該当するIDは見つかりませんでした。
+</p>
+
+<div class="notice">
+  このページは被害報告をもとにした注意喚起ページです。  
+  記載内容は確定情報ではなく、各自で十分に注意してください。
+</div>
+
+<div class="card id-card" data-risk="★★">例
+  <p class="id">Epic ID：example_123</p>
+  <p>危険度：★★</p>
+  <p class="status">状態：被害報告あり（証拠提出済み）</p>
+  <p>内容：スキン譲渡を装い外部リンクへ誘導</p>
+</div>
+
+<div class="card">
+  <p>※このフォームは注意喚起のための報告用です。<br>
+  内容を確認後、必要に応じて掲載します。</p>
+
+</html>
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSd-ZNki0e_ulnTqmhEStAH88g1JKVipzK2vnQxS6eA8F4SsnA/viewform" target="_blank" style="color:#38bdf8; font-weight:bold;">
+▶ 被害報告フォームを開く
+</a>
+<script>
+function searchID() {
+  const input = document.getElementById("searchBox").value.toLowerCase();
+  const cards = document.getElementsByClassName("id-card");
+
+  for (let i = 0; i < cards.length; i++) {
+    const text = cards[i].innerText.toLowerCase();
+    if (text.includes(input)) {
+      cards[i].style.display = "";
+    } else {
+      cards[i].style.display = "none";
+    }
+  }
+}
+</script>
+<script>
+function filterIDs() {
+  const keyword = document.getElementById("searchBox").value.toLowerCase();
+  const matchType = document.querySelector('input[name="match"]:checked').value;
+  const risk = document.getElementById("riskFilter").value;
+  const cards = document.getElementsByClassName("id-card");
+
+  let visibleCount = 0;
+
+  for (let card of cards) {
+    const text = card.innerText.toLowerCase();
+    const cardRisk = card.getAttribute("data-risk");
+
+    let match = false;
+    if (matchType === "exact") {
+      match = text.includes("epic id：" + keyword);
+    } else {
+      match = text.includes(keyword);
+    }
+
+    const riskMatch = !risk || cardRisk === risk;
+
+    if (match && riskMatch) {
+      card.style.display = "";
+      visibleCount++;
+    } else {
+      card.style.display = "none";
+    }
+  }
+
+  document.getElementById("noResult").style.display =
+    visibleCount === 0 ? "block" : "none";
+}
+</script>
+
+
